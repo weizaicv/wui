@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue ui</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        img{max-width: 100%;}
+        :root {
+            --button-height: 36px;
+            --font-size: 14px;
+            --button-bg: #fff;
+            --button-active-bg: #eee;
+            --border-radius: 4px;
+            --color: #333;
+            --border-color: #ddd;
+            --border-color-hover: #333;
+        }
+        body {
+            font-size: var(--font-size);
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <w-icon class="icon loading" name="loading"></w-icon>
+
+        <!-- 测试tab -->
+        <!-- 等价于
+            <w-tabs :selected="selectedTab" 
+            @update:selected="selectedTab = $event"> -->
+        <w-tabs :selected.sync="selectedTab">
+            <w-tabs-head class="">
+                <template slot="actions"><w-button>设置</w-button></template>
+                <w-tabs-item name="woman">美美</w-tabs-item>
+                <w-tabs-item name="settings" disabled>美美2</w-tabs-item>
+                <w-tabs-item name="finance">美美33333333333</w-tabs-item>
+            </w-tabs-head>
+            <w-tabs-body>
+                <w-tabs-pane name="woman">美美's data</w-tabs-pane>
+                <w-tabs-pane name="settings">美美2's data</w-tabs-pane>
+                <w-tabs-pane name="finance">美美3's data</w-tabs-pane>
+            </w-tabs-body>
+        </w-tabs>
+
+        <!-- 测试popover -->
+        <div style="margin: 50px;">
+            <div>
+                <w-popover position="top" trigger="hover">
+                    <template slot="content">
+                        <div>内容内容内容内容内容内容内容内容内容内容内容内容</div>
+                    </template>
+                    <w-button icon="settings">点我</w-button>
+                </w-popover>
+            </div>
+            <div>
+                <w-popover position="bottom" trigger="click">
+                    <template slot="content">
+                        <div>内容内asd内容内asd内容内容 asdadasdadas</div>
+                    </template>
+                    <w-button>点我2</w-button>
+                </w-popover>
+            </div>
+            <div>
+                <w-popover position="left" trigger="hover">
+                    <template slot="content">
+                        <div>容内容 as</div>
+                    </template>
+                    <w-button>点我2</w-button>
+                </w-popover>
+            </div>
+            <div>
+                <w-popover position="right" trigger="click">
+                    <template slot="content">
+                        <div>内容内asd内容内asd内容内容 asdadasdadas</div>
+                    </template>
+                    <w-button>点我2</w-button>
+                </w-popover>
+            </div>
+            <div>
+                <w-popover position="right" trigger="click">
+                    <!-- 结构出close方法 -->
+                    <template slot="content" slot-scope="{close}">
+                        <div>内部close函数作用域插槽传递</div>
+                        <w-button @click="close">关闭</w-button>
+                    </template>
+                    <w-button>内部close函数传递</w-button>
+                </w-popover>
+            </div>
+        </div>
+
+        <!-- 测试collpase手风琴 -->
+        <div style="margin: 50px;">
+            <w-collapse single :selected.sync = "selectedCollapseTab">
+                <w-collapse-item title="标题1" name="1">#标题1content标题1标题1content标题1contentcontent</w-collapse-item>
+                <w-collapse-item title="标题2" name="2">#标题2c标题1content标题1content标题1contentontent</w-collapse-item>
+                <w-collapse-item title="标题3" name="3">#标题3cont标题1content标题1content标题1contentent</w-collapse-item>
+            </w-collapse>
+            {{selectedCollapseTab}}
+        </div>
+        
+    </div>
+    <div id="test"></div>
+
+</body>
+
+</html>
+<!-- <script src="//at.alicdn.com/t/font_1553596_ubo3p9t0gjp.js"></script> -->
+<script src="./src/app.js"></script>

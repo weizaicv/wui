@@ -1,0 +1,50 @@
+{
+  "name": "w-ui-design-test",
+  "version": "0.0.3",
+  "description": "#### Description vue组件化设计，实现自己的组件库",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "parcel index.html --no-cache",
+    "dev-test": "parcel watch test/* --no-cache & karma start",
+    "test": "parcel build test/* --no-minify && karma start --single-run",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/weizaijiayou/vue-UI-design.git"
+  },
+  "keywords": [
+    "vue",
+    "ui"
+  ],
+  "author": "weizai",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.1.0",
+    "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
+    "karma": "^4.4.1",
+    "karma-chai": "^0.1.0",
+    "karma-chai-spies": "^0.1.4",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-sinon-chai": "^2.0.2",
+    "mocha": "^6.2.2",
+    "node-sass": "^4.13.0",
+    "parcel-bundler": "^1.9.2",
+    "sass": "^1.23.7",
+    "sass-loader": "^8.0.2",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0",
+    "vue-hot-reload-api": "^2.3.4",
+    "vue-template-compiler": "^2.6.11",
+    "vuepress": "^1.2.0"
+  },
+  "alias": {
+    "vue": "./node_modules/vue/dist/vue.common.js"
+  }
+}
