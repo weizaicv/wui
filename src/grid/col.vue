@@ -20,6 +20,7 @@
         return invalid
     }
     export default {
+       name:'WCol',
        props:{
            span:{
                type:[Number,String],
@@ -38,7 +39,6 @@
        data(){
            return {
                gutter:0,
-              
            }
        },
        computed: {
@@ -96,6 +96,7 @@
 
 <style lang="scss" scoped>
 .col{
+    box-sizing: border-box;
     $class-prefix:col-;
     @for $i from 1 through 24 {
         &.#{$class-prefix}#{$i}{

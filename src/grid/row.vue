@@ -6,6 +6,7 @@
 
 <script>
     export default {
+       name:'WRow',
         props:{
             gutter:{
                 type:[Number,String]

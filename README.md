@@ -1,9 +1,7 @@
 # WUI - 一个vue的ui组件库
 
-图标
-
 ## 介绍
-一个vue框架
+一个vue框架 [点击进入官网文档](https://weizaicv.github.io/WUI). 
 
 ## 开始使用
 1.添加样式

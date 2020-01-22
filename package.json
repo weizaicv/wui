@@ -21,12 +21,14 @@
   "author": "weizai",
   "license": "ISC",
   "dependencies": {
+    "prismjs": "^1.19.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.1.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
+    "highlight": "^0.2.4",
     "karma": "^4.4.1",
     "karma-chai": "^0.1.0",
     "karma-chai-spies": "^0.1.4",

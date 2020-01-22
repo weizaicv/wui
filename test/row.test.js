@@ -1,8 +1,8 @@
 const expect = chai.expect;
 import Vue from 'vue'
-import Row from '../src/row'
+import Row from '../src/grid/row'
 //不能定义name 不然不能单元测试！？？？？
-import Col from '../src/col'
+import Col from '../src/grid/col'
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
