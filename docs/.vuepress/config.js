@@ -1,6 +1,6 @@
 module.exports = {
-    base:'/WUI/',
-    title: 'WUI',
+    base:'/wui/',
+    title: 'wui',
     description: 'A Vuejs Framework',
     themeConfig: {
         nav: [
