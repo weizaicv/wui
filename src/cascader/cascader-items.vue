@@ -7,7 +7,14 @@
             :key="index" 
             @click="onClickLabel(item)">
             <span class="name">{{item.name}}</span>
-            <icon class="icon" v-if="rightArrowVisible(item)" name="nextPage"></icon>
+            <span class="icons">
+                <template v-if="item.name === loadingItem.name">
+                    <icon class="loading" name="loading"></icon>
+                </template>
+                <template v-else>
+                   <icon class="next" v-if="rightArrowVisible(item)" name="nextPage"></icon>
+                </template>
+            </span>
             </div>    
         </div>   
         <div class="right" v-if="rightItems">
@@ -17,6 +24,8 @@
             :level="level+1"
             :selected="selected"
             @update:selected="onUpdateSelected"
+            :loading-item="loadingItem"
+            :loadData="loadData"
             ></w-cascader-items>
         </div>             
     </div>
@@ -46,7 +55,11 @@
             level: {
                 type: Number,
                 default: 0
-            }
+            },
+            loadingItem: {
+                type: Object,
+                default: () => ({})
+            },
         },
         computed:{
             //依赖没有更新，自己也不会去更新
@@ -116,9 +129,15 @@
             margin-right: 1em;
             user-select: none;
         }
-        .icon {
+        .icons {
             margin-left: auto;
             transform: scale(0.5);
+            .next {
+                // transform: scale(0.5);
+            }   
+            .loading {
+                animation: spin 2s infinite linear;
+            }
         }
      }
  }

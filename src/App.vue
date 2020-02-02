@@ -218,7 +218,7 @@ export default {
     })
   },
   mounted() {
-    console.log("selectedTab", this.selectedTab);
+    // console.log("selectedTab", this.selectedTab);
   },
   methods: {
     loadData({id},updateSource){
@@ -262,7 +262,7 @@ export default {
       this.$toast("bottom", { position: "bottom" });
     },
     inputchange(e) {
-      console.log(e);
+      // console.log(e);
     }
   }
 };
