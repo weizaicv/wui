@@ -6,8 +6,8 @@
             v-for="(item,index) in items" 
             :key="index" 
             @click="onClickLabel(item)">
-            {{item.name}}
-            <icon class="icon" v-if="item.children" name="nextPage"></icon>
+            <span class="name">{{item.name}}</span>
+            <icon class="icon" v-if="rightArrowVisible(item)" name="nextPage"></icon>
             </div>    
         </div>   
         <div class="right" v-if="rightItems">
@@ -40,23 +40,38 @@
                 type: Array,
                 default: () => []
             },
+            loadData: {
+                type: Function
+            },
             level: {
                 type: Number,
                 default: 0
             }
         },
         computed:{
+            //依赖没有更新，自己也不会去更新
+            //这里selected和level都么有更新
+            //因为只是更新source里面的children
             rightItems(){
-                // 右边的select是父传递下来的
-                let currentSelected = this.selected[this.level]
-                if(currentSelected && currentSelected.children){
-                    return currentSelected.children
-                }else{
-                    return null
+                if(this.selected[this.level]){
+                    let selected = this.items.filter(item=>item.name === this.selected[this.level].name)
+                    if(selected && selected[0].children && selected[0].children.length>0){
+                        return selected[0].children
+                    }
                 }
+                // let currentSelected = this.selected[this.level]
+                // if(currentSelected && currentSelected.children){
+                //     return currentSelected.children
+                // }else{
+                //     return null
+                // }
+
             }
         },
         methods:{
+            rightArrowVisible(item){
+                return this.loadData ? !item.isLeaf : item.children
+            },
             onClickLabel(item){
                 //将选中的传递到最顶级 必须深复制 记住级别
                 //更改等级 删除后续的
@@ -66,6 +81,7 @@
                 this.$emit('update:selected', copy)
             },
             onUpdateSelected (newSelected) {
+                //改变dom结构
                 this.$emit('update:selected', newSelected)
             }
         }
@@ -81,16 +97,29 @@
      height: 100px;
      .left{
         height: 100%;
-        padding: .3em 0;
+        overflow: auto;
      }  
      .right{
         height: 100%;
         border-left: 1px solid $border-color-light;
      }
      .label{
-         padding: .3em 1em;
+         padding: .5em 1em;
          display: flex;
          align-items: center;
+         cursor: pointer;
+         white-space: nowrap;
+        &:hover {
+            background: $grey;
+        }
+        > .name {
+            margin-right: 1em;
+            user-select: none;
+        }
+        .icon {
+            margin-left: auto;
+            transform: scale(0.5);
+        }
      }
  }
 </style>

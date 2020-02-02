@@ -1,10 +1,5 @@
 <template>
   <div id="app">
-    <!-- 测试省市区选择 -->
-    <div style="padding: 20px;">
-        <w-cascader :source="source" popover-height="200px" @update:selected="selected = $event" :selected="selected"></w-cascader>
-    </div>
-
     <!-- 测试tabs -->
     <!-- <w-tabs :selected.sync="selectedTab">
       <w-tabs-head class="">
@@ -82,10 +77,24 @@
       </w-collapse>
       {{ selectedCollapseTab }}
     </div> -->
+
+
+    <!-- 测试省市区选择 -->
+    <div style="padding: 20px;">
+        <!-- <w-cascader :source="source" popover-height="200px" @update:selected="selected = $event" :selected="selected"></w-cascader> -->
+        <w-cascader 
+        :source.sync="source" 
+        popover-height="200px" 
+        :selected.sync="selected"
+        :loadData="loadData"
+        >
+        </w-cascader>
+    </div>
   </div>
 </template>
 
 <script>
+import db from './db'
 import Vue from "vue";
 import Button from "./button/button";
 import ButtonGroup from "./button/button-group";
@@ -112,6 +121,23 @@ import CascaderItems from "./cascader/cascader-items";
 
 Vue.use(plugin);
 
+//promise化
+function ajax(parentId = 0){
+  // return db.filter(item=>item.parent_id == parentId)
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      let result = db.filter(item=>item.parent_id == parentId)
+      result.forEach(node=>{
+        if(db.filter(item=>item.parent_id===node.id).length > 0){
+          node.isLeaf = false
+        }else{
+          node.isLeaf = true
+        }
+      })
+      resolve(result)
+    },300)
+  })
+}
 export default {
   name: "app",
   components: {
@@ -146,45 +172,71 @@ export default {
       selectedTab: "woman",
       selectedCollapseTab: ["1", "2"],
       selected:[],
-      source: [
-        {
-          name: "浙江",
-          children: [
-            {
-              name: "杭州",
-              children: [{ name: "上城" }, { name: "下城" }, { name: "江干" }]
-            },
-            {
-              name: "嘉兴",
-              children: [{ name: "南湖" }, { name: "秀洲" }, { name: "嘉善" }]
-            }
-          ]
-        },
-        {
-          name: "福建",
-          children: [
-            {
-              name: "福州",
-              children: [{ name: "鼓楼" }, { name: "台江" }, { name: "仓山" }]
-            }
-          ]
-        },{
-            name: '安徽',
-            children: [
-                {
-                    name: '合肥',
-                    children: [{ name: '瑶海'}, {name: '庐阳'}]
-            }
-            ]
-        }
+      source:[]
+      // source: [
+      //   {
+      //     name: "浙江",
+      //     children: [
+      //       {
+      //         name: "杭州",
+      //         children: [{ name: "上城" }, { name: "下城" }, { name: "江干" }]
+      //       },
+      //       {
+      //         name: "嘉兴",
+      //         children: [{ name: "南湖" }, { name: "秀洲" }, { name: "嘉善" }]
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     name: "福建",
+      //     children: [
+      //       {
+      //         name: "福州",
+      //         children: [{ name: "鼓楼" }, { name: "台江" }, { name: "仓山" }]
+      //       }
+      //     ]
+      //   },{
+      //       name: '安徽',
+      //       children: [
+      //           {
+      //               name: '合肥',
+      //               children: [{ name: '瑶海'}, {name: '庐阳'}]
+      //       }
+      //       ]
+      //   }
 
-      ]
+      // ]
     };
+  },
+  created(){
+    ajax(0).then(result => {
+      this.source = result
+      // this.source = result.map(res=>{
+      //   res.children = res.children || []
+      //   return res
+      // })
+    })
   },
   mounted() {
     console.log("selectedTab", this.selectedTab);
   },
   methods: {
+    loadData({id},updateSource){
+      //传递回调 执行回调传入数据
+      ajax(id).then(result=>{
+        updateSource(result)
+      })
+    },
+    //用户点击北京，找到北京的id对应的区，放入北京的source的children里面，实现二级的渲染
+    //@update:selected="xxx"
+    xxx(newSelected){
+      ajax(newSelected[0].id).then(result=>{
+        let last = this.source.filter(item => item.id === newSelected[0].id)[0]
+        //一开始没children现在有children，对数组修改用set
+        this.$set(last,'children',result)
+        // last.children = result
+      })
+    },
     clickToast() {
       //传入两个参数
       //msg options
