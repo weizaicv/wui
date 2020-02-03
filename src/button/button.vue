@@ -51,7 +51,6 @@
         padding: 0 1em;
         border-radius: $border-radius;
         border: 1px solid $border-color;
-        // background: var(--button-bg); //可以使用全局css变量
         background: $button-bg;
         display: inline-flex;
         justify-content: center;
