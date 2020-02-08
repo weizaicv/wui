@@ -7,6 +7,12 @@
 <script>
     export default {
         name: "WNav",
+        //依赖注入
+        provide(){
+            return {
+                root: this
+            }
+        },
         props: {
             selected: {
                 type: Array,
@@ -17,9 +23,15 @@
             type: Boolean,
             default: false
         },
-        computed:{
-            items(){
-                return this.$children.filter(vm => vm.$options.name == 'WNavItem')
+        // computed:{
+        //     items(){
+        //         return this.$children.filter(vm => vm.$options.name == 'WNavItem')
+        //     }
+        // },
+        data(){
+            return {
+                items:[],
+                namePath: [] //记录sub-nav下面点击了哪个？
             }
         },
         mounted(){
@@ -33,6 +45,10 @@
             this.updateChildren()
         },
         methods:{
+            //子级可以调用父级的方法，间接传入父级数据
+            addItem(vm){
+                this.items.push(vm)
+            },
             //更新nav-item数据 监听click传递来的事件
             updateChildren(){
                 this.items.forEach(vm => {
@@ -61,8 +77,11 @@
 </script>
 
 <style lang="scss" scoped>
-.g-nav{
+@import "_var";
+.w-nav{
     display: flex;
-    border: 1px solid red;
+    border-bottom: 1px solid $grey;
+    cursor: default;
+    user-select: none;
 }
 </style>
