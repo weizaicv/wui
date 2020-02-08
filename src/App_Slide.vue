@@ -11,7 +11,7 @@
 
 <script>
 import Vue from "vue";
-import Slides from './slides/slides'
+import Slides from './slides/slides' 
 import SlidesItem from './slides/slides-item'
 
 export default {
