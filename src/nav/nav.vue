@@ -1,5 +1,5 @@
 <template>
-    <div class="w-nav">
+    <div class="w-nav" :class="{vertical}">
         <slot></slot>
     </div>
 </template>
@@ -10,19 +10,25 @@
         //依赖注入
         provide(){
             return {
-                root: this
+                root: this,
+                vertical: this.vertical
             }
         },
         props: {
             selected: {
                 type: Array,
                 default: ()=> []
+            },
+            multiple: {
+                type: Boolean,
+                default: false
+            },
+            vertical:{
+                type: Boolean,
+                default: false
             }
         },
-        multiple: {
-            type: Boolean,
-            default: false
-        },
+        
         // computed:{
         //     items(){
         //         return this.$children.filter(vm => vm.$options.name == 'WNavItem')
@@ -83,5 +89,9 @@
     border-bottom: 1px solid $grey;
     cursor: default;
     user-select: none;
+    &.vertical {
+        flex-direction: column;
+        border: 1px solid $grey;
+    }
 }
 </style>

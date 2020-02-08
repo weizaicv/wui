@@ -9,6 +9,6 @@ Vue.use(animated)
 new Vue({
   // render: h => h(Apptest),
   // render: h => h(App),
-  // render: h => h(App_Slide),
-  render: h => h(App_Nav),
+  render: h => h(App_Slide),
+  // render: h => h(App_Nav),
 }).$mount('#app')

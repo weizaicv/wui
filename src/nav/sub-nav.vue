@@ -1,14 +1,30 @@
 <template>
-  <div class="w-sub-nav" :class={active} v-click-outside="close">
+  <div class="w-sub-nav" :class={active,vertical} v-click-outside="close">
     <span class="w-sub-nav-label" @click="onClick">
       <slot name="title"></slot>
-      <span class="w-sub-nav-icon" :class="{open}">
+      <span class="w-sub-nav-icon" :class="{open,vertical}">
         <w-icon name="nextPage"></w-icon>
       </span>
     </span>
-    <div class="w-sub-nav-popover" v-show="open">
-      <slot></slot>
-    </div>
+    <template v-if="vertical">
+      <!-- 动画钩子 做复杂动画 -->
+      <transition
+      @enter="enter" 
+      @leave="leave" 
+      @after-leave="afterLeave"
+      @after-enter="afterEnter"
+      >
+        <div class="w-sub-nav-popover" v-show="open" :class="{vertical}">
+          <slot></slot>
+        </div>
+      </transition>
+    </template>
+    <template v-else>
+      <div class="w-sub-nav-popover" v-show="open">
+        <slot></slot>
+      </div>
+    </template>
+   
   </div>
 </template>
 
@@ -17,7 +33,7 @@
   import ClickOutside from '../click-outside'
   export default {
     name: "WSubNav",
-    inject: ['root'],
+    inject: ['root','vertical'],
     directives: {ClickOutside},
     components:{
       'w-icon':Icon
@@ -39,6 +55,34 @@
       }
     },
     methods:{
+      //动画钩子
+      enter(el, done){
+        let {height} = el.getBoundingClientRect()
+        el.style.height = 0
+        //手动引起重绘 否则会合并样式
+        el.getBoundingClientRect()
+        el.style.height = `${height}px`
+        el.addEventListener('transitionend',()=>{
+          done()//异步结束
+        })
+      },
+      afterEnter(el){
+        //进入之后height一定要auto 不然子组件显示不出 高度
+        el.style.height = 'auto'
+      },
+      leave(el, done){
+        let {height} = el.getBoundingClientRect()
+        el.style.height = `${height}px`
+        //手动引起重绘 否则会合并样式
+        el.getBoundingClientRect()
+        el.style.height = 0
+        el.addEventListener('transitionend',()=>{
+          done()//异步结束
+        })
+      },
+      afterLeave(el){
+        el.style.height = 'auto'
+      },
       onClick(){
         this.open = !this.open
       },
@@ -52,6 +96,7 @@
           this.$parent.updateNamePath()
         }else{}
         //选中具体某一个子项目 就隐藏
+        if(!this.vertical)
         this.open = false
       }
     }
@@ -60,9 +105,13 @@
 
 <style scoped lang="scss">
 @import '_var';
+.x-enter-active, .x-leave-active { }
+.x-enter, .x-leave-to { }
+.x-enter-to, .x-leave { }
 .w-sub-nav{
   position: relative;
-  &.active {
+  &:not(.vertical){
+    &.active {
       &::after {
         content: '';
         position: absolute;
@@ -72,6 +121,7 @@
         width: 100%;
       }
     }
+  }
   &-label { padding: 10px 20px; display: block; }
   &-icon { display: none; }
   &-popover{
@@ -85,6 +135,14 @@
     font-size: $font-size;
     color: $light-color;
     min-width: 8em;
+    transition: height 250ms;
+    &.vertical {
+      position: static;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
+    }
   }
 }
 .w-sub-nav .w-sub-nav {
@@ -109,6 +167,12 @@
       margin-left: 1em;
       svg {
         fill: $light-color;
+      }
+      &.vertical {
+        transform: rotate(90deg);
+        &.open{
+          transform: rotate(270deg);
+        }
       }
       &.open {
         transform: rotate(180deg);

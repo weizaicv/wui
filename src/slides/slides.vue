@@ -10,8 +10,16 @@
             <div class="w-slides-wrapper">
                 <slot></slot>
             </div>
+            <div class="w-slides-inner-dots" v-if="isMobile">
+                 <span 
+                    class = "dots-item"
+                    v-for="(n,index) in childrenLength" 
+                    :class="{active: selectedIndex === n-1}"
+                    :key="index">
+                </span>
+            </div>
         </div>
-        <div class="w-slides-dots">
+        <div class="w-slides-dots" v-if="!isMobile">
              <span @click="onClickPrev">
                 <w-icon name="prePage"></w-icon>
             </span>
@@ -41,6 +49,10 @@
            autoplay:{
                type: Boolean,
                default: true
+           },
+           isMobile:{
+               type: Boolean,
+               default: false
            }
        },
        data(){
@@ -176,7 +188,10 @@
 
 <style lang="scss" scoped>
   .w-slides {
-    &-window {overflow: hidden;}
+    &-window {
+        overflow: hidden;
+        position: relative;
+    }
     &-wrapper {
       position: relative;
     }
@@ -207,5 +222,25 @@
         }
       }
     }
+  }
+  .w-slides-inner-dots{
+        position:absolute;
+        bottom:0;width:2.5em;
+        display:flex;
+        justify-content: space-between;
+        left:50%;
+        margin-left:-1.25em;
+        bottom: 5%;
+        .dots-item{
+            z-index:1000;
+            display:inline-block;
+            width:.5em;
+            height:.5em;
+            border-radius:50%;
+            background:#fff;
+            &.active{
+                background:#666;
+            }
+        }
   }
 </style>

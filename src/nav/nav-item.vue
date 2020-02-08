@@ -1,5 +1,5 @@
 <template> 
-    <div class="w-nav-item" :class="{selected}" @click="onClick">
+    <div class="w-nav-item" :class="{selected,vertical}" @click="onClick">
         <slot></slot>
     </div>
 </template>
@@ -7,7 +7,7 @@
 <script>
     export default {
         name: 'WNavItem',
-        inject:['root'],
+        inject:['root','vertical'],
         props: {
             name: {
                 type: String,
@@ -35,22 +35,32 @@
 </script>
 
 <style lang="scss" scoped>
+// 是否有vertical判断是否 样式中 下划线
 @import "_var";
 .w-nav-item{
     padding: 10px 20px;
     position: relative;
-    &.selected{
-        &::after{
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            border-bottom: 2px solid $blue;
-            width: 100%;
+  
+    &:not(.vertical){
+        &.selected{
+            &::after{
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                border-bottom: 2px solid $blue;
+                width: 100%;
+            }
+        }
+    }
+    &.vertical{
+        &.selected{
+            color: $blue;
         }
     }
 }
-.w-sub-nav .w-nav-item{
+
+.w-sub-nav .w-nav-item:not(.vertical){
     &.selected {
         color: $color;
         background: $grey;
@@ -58,5 +68,9 @@
             display: none;
         }
     }
+}
+a {
+    color: inherit;
+    text-decoration: none;
 }
 </style>

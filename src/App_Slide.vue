@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- slide -->
-    <w-slides class="wrapper" :selected.sync="selected">
+    <w-slides class="wrapper" :selected.sync="selected" :isMobile="false">
       <w-slides-item name="1"><div class="box">1</div></w-slides-item>
       <w-slides-item name="2"><div class="box">2</div></w-slides-item>
       <w-slides-item name="3"><div class="box">3</div></w-slides-item>
