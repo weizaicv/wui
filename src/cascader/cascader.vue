@@ -123,7 +123,7 @@
                     // this.$set(toUpdate,'children',result)
                 }
                 //判断是否是叶子 是叶子就不需要更新了 因为已经是最后一级了
-                if (!lastItem.isLeaf) {
+                if (!lastItem.isLeaf && this.loadData)  {
                     this.loadData && this.loadData(lastItem, updateSource) 
                     this.loadingItem = lastItem
                     // 回调:把别人传给我的函数调用一下

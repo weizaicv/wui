@@ -1,5 +1,16 @@
 <template>
   <div id="app">
+    <button @click="showme=!showme">显示动画</button>
+    <!-- <transition name="bounce">
+      <p v-if="showme">show me</p> 
+    </transition> -->
+    <p class="animated bounceInDown">123</p>
+    <transition
+      enter-active-class="animated bounceInDown"
+      leave-active-class="animated bounceOutRight"
+    >
+      <p v-if="showme">show me</p> 
+    </transition>
     <!-- 测试tabs -->
     <!-- <w-tabs :selected.sync="selectedTab">
       <w-tabs-head class="">
@@ -168,6 +179,7 @@ export default {
       loading1: false,
       loading2: true,
       loading3: false,
+      showme:false,
       message: "mes",
       selectedTab: "woman",
       selectedCollapseTab: ["1", "2"],
@@ -268,4 +280,16 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.bounce-enter-active{
+  animation: bounce-in .5s;
+}
+.bounce-leave-active{
+  animation: bounce-in .5s reverse;
+}
+@keyframes bounce-in{
+    0%{ transform:scale(0)}
+    50%{ transform:scale(1.5)}
+    100%{ transform:scale(1)}
+}
+</style>
