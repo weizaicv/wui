@@ -75,4 +75,29 @@ describe('validate.js', () => {
         expect(errors.email.pattern).to.exist
         expect(errors.email.minLength).to.exist
     })
+    it('test complex rule', () => {
+        let data = {
+            email: 'abcd'
+        }
+        validate.hasNumber = (value) => {
+            if(!/\d/.test(value)){
+                return '必须有数字'
+            }
+        }
+        let rules = [
+            {key:'email',minLength:5,maxLength:10,hasNumber:true}
+        ]
+        let errors = validate(data, rules)
+        //报错两个
+        //errors = {email:{pattern:'格式不匹配',required:'必填'}}
+        expect(errors.email.hasNumber).to.exist
+        expect(errors.email.minLength).to.exist
+    })
+
+
+    let demoRule = {
+        key:'email',minLength:5,maxLength:10,hasNumber:true,
+        hasLowerCaseAndUpperCase:true,hasDot:true,hasUnderscore:true,
+        hasF:true
+    }
 })
