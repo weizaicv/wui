@@ -8,6 +8,7 @@
             :order-by.sync = "orderBy"
             :loading="loading"
             @update:orderBy ="x"
+            height="400px"
             numberVisible
             bordered 
             compact
@@ -47,6 +48,16 @@
                 {id: 6, name: '蝙蝠侠', score: 99},
                 {id: 7, name: '蜘蛛侠', score: 100},
                 {id: 8, name: '钢铁侠', score: 99},
+                {id: 9, name: '李四', score: 99},
+                {id: 10, name: '超人', score: 100},
+                {id: 11, name: '蝙蝠侠', score: 99},
+                {id: 12, name: '蜘蛛侠', score: 100},
+                {id: 13, name: '钢铁侠', score: 99},
+                {id: 14, name: '李四', score: 99},
+                {id: 15, name: '超人', score: 100},
+                {id: 16, name: '蝙蝠侠', score: 99},
+                {id: 17, name: '蜘蛛侠', score: 100},
+                {id: 18, name: '钢铁侠', score: 99}
               ]  
             }
         },

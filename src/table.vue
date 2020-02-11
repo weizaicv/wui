@@ -1,53 +1,56 @@
 <template>
-  <div class="w-table-wrapper">
-    <table class="w-table" :class="{ bordered, compact, striped: striped }">
-      <thead>
-        <tr>
-          <th>
-            <input
-              type="checkbox"
-              ref="allChecked"
-              @change="onChangeAllItems"
-              :checked="isAllItemsSelected"
-            />
-          </th>
-          <th v-if="numberVisible">#</th>
-          <th
-            v-for="column in columns"
-            :key="column.field"
-          >
-            <div class="w-table-header">
-                {{column.text}}
-                <span 
-                class="w-table-sorter" 
-                v-if="column.field in orderBy"
-                @click="changeOrderBy(column.field)"
-                >
-                <w-icon name="asc" :class="{active:orderBy[column.field]==='asc'}"></w-icon>
-                <w-icon name="desc" :class="{active:orderBy[column.field]==='desc'}"></w-icon>
-                </span>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in dataSource" :key="item.id">
-          <td>
-            <input
-              type="checkbox"
-              @change="onChangeItem(item, index, $event)"
-              :checked="inSelectedItems(item)"
-            />
-          </td>
-          <td v-if="numberVisible">{{ index + 1 }}</td>
-          <template v-for="column in columns">
-            <td :key="column.field">
-              {{ item[column.field] }}
+
+  <div class="w-table-wrapper" :style="{height, overflow: 'auto'}" ref="wrapper"> 
+    <div :style="{height, overflow: 'auto'}" ref="tableWrapper">
+        <table class="w-table" :class="{ bordered, compact, striped: striped }" ref="table">
+        <thead>
+            <tr>
+            <th>
+                <input
+                type="checkbox"
+                ref="allChecked"
+                @change="onChangeAllItems"
+                :checked="isAllItemsSelected"
+                />
+            </th>
+            <th v-if="numberVisible">#</th>
+            <th
+                v-for="column in columns"
+                :key="column.field"
+            >
+                <div class="w-table-header">
+                    {{column.text}}
+                    <span 
+                    class="w-table-sorter" 
+                    v-if="column.field in orderBy"
+                    @click="changeOrderBy(column.field)"
+                    >
+                    <w-icon name="asc" :class="{active:orderBy[column.field]==='asc'}"></w-icon>
+                    <w-icon name="desc" :class="{active:orderBy[column.field]==='desc'}"></w-icon>
+                    </span>
+                </div>
+            </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in dataSource" :key="item.id">
+            <td>
+                <input
+                type="checkbox"
+                @change="onChangeItem(item, index, $event)"
+                :checked="inSelectedItems(item)"
+                />
             </td>
-          </template>
-        </tr>
-      </tbody>
-    </table>
+            <td v-if="numberVisible">{{ index + 1 }}</td>
+            <template v-for="column in columns">
+                <td :key="column.field">
+                {{ item[column.field] }}
+                </td>
+            </template>
+            </tr>
+        </tbody>
+        </table>
+    </div>
     <div v-if="loading" class="w-table-loading">
         <w-icon name="loading"/>
     </div>
@@ -101,6 +104,10 @@ export default {
     loading:{
         type:Boolean,
         default:false
+    },
+    //表格高度
+    height:{
+        type:[Number,String]
     }
   },
   computed: {
@@ -122,6 +129,18 @@ export default {
       }
       return equal;
     }
+  },
+  mounted(){
+    //固定表头 原理是复制一份table 删除tbody
+    let table2 = this.$refs.table.cloneNode(true)
+    table2.classList.add('w-table-copy')
+    Array.from(table2.children).map(node=>{
+        if(node.tagName.toLowerCase() !== 'thead'){
+            node.remove()
+        }
+    })
+    this.$refs.wrapper.appendChild(table2)
+    console.log(table2)
   },
   watch: {
     //检测selectedItems选中状态 改变半选和全选按钮
@@ -260,6 +279,13 @@ $grey: darken($grey, 10%);
           height: 50px;
           @include spin;
       }
+  }
+  &-copy{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: white;
   }
 }
 </style>
