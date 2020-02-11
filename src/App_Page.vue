@@ -5,10 +5,10 @@
 </template>
 
 <script>
-    import Pager from './pager'
+    import WPager from './pager'
     export default {
         components:{
-            'w-pager':Pager
+            WPager
         },
         data(){
             return {
