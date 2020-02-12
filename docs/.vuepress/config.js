@@ -6,7 +6,7 @@ module.exports = {
         nav: [
             { text: '主页', link: '/' },
             { text: '文档', link: '/install/' },
-            { text: '交流', link: 'http://google.com' }
+            { text: 'GitHub', link: 'https://github.com/weizaicv/wui/' }
         ],
         sidebar: [
             {
@@ -14,7 +14,8 @@ module.exports = {
                 children: [
                     '/install/',
                     '/get-started/',
-                ]
+                ],
+                collapsable: false, //是否展开
             },
             {
                 title: '组件',  
@@ -25,8 +26,10 @@ module.exports = {
                   '/components/layout',
                   '/components/popover',
                   '/components/tabs',
-                  '/components/toast'
-                ]
+                  '/components/toast',
+                  '/components/collapse'
+                ],
+                collapsable: false, //是否展开
             }
           ]
     }

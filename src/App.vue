@@ -12,7 +12,7 @@
       <p v-if="showme">show me</p> 
     </transition>
     <!-- 测试tabs -->
-    <!-- <w-tabs :selected.sync="selectedTab">
+    <w-tabs :selected.sync="selectedTab">
       <w-tabs-head class="">
         <template slot="actions"><w-button>设置</w-button></template>
         <w-tabs-item name="woman">美美</w-tabs-item>
@@ -24,10 +24,19 @@
         <w-tabs-pane name="settings">美美2's data</w-tabs-pane>
         <w-tabs-pane name="finance">美美3's data</w-tabs-pane>
       </w-tabs-body>
-    </w-tabs> -->
+    </w-tabs>
 
+    <!-- 测试布局 -->
+    <w-layout style="height: 40vh;">
+        <w-aside class="aside">aside</w-aside>
+        <w-layout>
+            <w-header class="header">header</w-header>
+            <w-content class="wcontent">content</w-content>
+            <w-footer class="footer">footer</w-footer>
+        </w-layout>
+    </w-layout>
     <!-- 测试popover -->
-    <!-- <div style="margin: 50px;">
+    <div style="margin: 50px;">
       <div>
         <w-popover position="top" trigger="hover">
           <template slot="content">
@@ -69,7 +78,7 @@
           <w-button>内部close函数传递</w-button>
         </w-popover>
       </div>
-    </div> -->
+    </div>
     <!-- slot-scope结构出close方法 -->
 
 
@@ -113,17 +122,17 @@ import Icon from "./icon";
 import Input from "./input";
 import Row from "./grid/row";
 import Col from "./grid/col";
-import Layout from "./layout";
-import Header from "./header";
-import Footer from "./footer";
-import Aside from "./aside";
-import Content from "./content";
+import Layout from "./layout/layout";
+import Header from "./layout/header";
+import Footer from "./layout/footer";
+import Aside from "./layout/aside";
+import Content from "./layout/content";
 import plugin from "./plugin";
-import Tabs from "./tabs";
-import TabsHead from "./tabs-head";
-import TabsBody from "./tabs-body";
-import TabsItem from "./tabs-item";
-import TabsPane from "./tabs-pane";
+import Tabs from "./tabs/tabs";
+import TabsHead from "./tabs/tabs-head";
+import TabsBody from "./tabs/tabs-body";
+import TabsItem from "./tabs/tabs-item";
+import TabsPane from "./tabs/tabs-pane";
 import Popover from "./popover";
 import Collapse from "./collapse/collapse";
 import CollapseItem from "./collapse/collapse-item";
@@ -292,4 +301,8 @@ export default {
     50%{ transform:scale(1.5)}
     100%{ transform:scale(1)}
 }
+ .aside{background: #333;min-width: 100px;}
+.header{background: #666;min-height: 50px;}
+.wcontent{background: #999;}
+.footer{background: #ddd;min-height: 50px;}
 </style>

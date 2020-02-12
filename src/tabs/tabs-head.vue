@@ -1,5 +1,5 @@
 <template>
-    <div class="tabs-head"> 
+    <div class="tabs-head" ref="tabsHead"> 
         <slot></slot>
         <div class="line" ref="line"></div>
         <div class="action-wrapper">
@@ -17,9 +17,14 @@
             //     console.log(this.$refs.line.offsetWidth,this.$refs.line.offsetHeight)
             // })
             this.eventBus.$on('update:selected', (item, vm) => {
-                let {width,height,left,top} = vm.$el.getBoundingClientRect()
+                //有个bug 万一一开始tab的位置距离窗口有距离 需要减去这个距离
+                // console.log(this.$refs.tabsHead.getBoundingClientRect())
+                let {left:OriginLeft} = this.$refs.tabsHead.getBoundingClientRect()
+
+                let {width,height,left,top,x} = vm.$el.getBoundingClientRect()
+                // console.log('vm.$el', vm.$el.getBoundingClientRect())
                 this.$refs.line.style.width = `${width}px`
-                this.$refs.line.style.left = `${left}px`
+                this.$refs.line.style.left = `${left-OriginLeft}px`
                 console.log(width,left)
             })
         },

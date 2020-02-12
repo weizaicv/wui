@@ -1,7 +1,11 @@
 {
-  "name": "vue3xx",
-  "version": "0.1.0",
-  "private": true,
+  "name": "w-ui-design-test",
+  "version": "0.1.1",
+  "description": "a vue js framework",
+  "main":"lib/vue-test.umd.min.js",
+  "private": false,
+  "license": "MIT",
+  "author": "weizai",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -9,7 +13,8 @@
     "test:unit": "cross-env BABEL_ENV=test karma start",
     "test:unit:old": "vue-cli-service test:unit",
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "lib": "vue-cli-service build --target lib --name vue-test --dest lib src/index.js"
   },
   "dependencies": {
     "animate.css": "^3.7.2",

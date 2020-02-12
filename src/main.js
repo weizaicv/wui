@@ -6,12 +6,15 @@ import App_Nav from './App_Nav.vue'
 import App_Page from './App_Page.vue'
 import App_Table from './App_Table.vue'
 import animated from 'animate.css'
+import {WButton} from './index'
+// Vue.use(WButton)
+
 Vue.config.productionTip = false
 Vue.use(animated)
 new Vue({
   // render: h => h(Apptest),
-  // render: h => h(App),
-  render: h => h(App_Table),
+  render: h => h(App),
+  // render: h => h(App_Table),
   // render: h => h(App_Page),
   // render: h => h(App_Slide),
   // render: h => h(App_Nav),

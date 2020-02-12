@@ -2,6 +2,10 @@
 title: Layout 布局
 ---
 # 布局
+#### 页面固定布局
 
-使用方法
+<ClientOnly>
+<layout-demos />
+</ClientOnly>
+
 
