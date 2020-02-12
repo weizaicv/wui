@@ -32,8 +32,9 @@
                         </span>
                     </div>
                 </th>
-                <th ref="actionsHeader" v-if="$scopedSlots.default"></th>
-                <th :style="{width:scrollBarWidth+'px'}" v-if="scrollBarWidth>0"></th>
+                <!-- 加上key 不然无法判断是哪个 -->
+                <th ref="actionsHeader" v-if="$scopedSlots.default" key="actionsheader"></th>
+                <th :style="{width:scrollBarWidth+'px'}" v-if="scrollBarWidth>0" key="scrollbar"></th>
             </tr>
         </thead>
         <tbody>
@@ -56,7 +57,13 @@
                         <td 
                         :style="{width:column.width + 'px'}"
                         :key="column.field">
-                        {{ item[column.field] }}
+                            <!-- 判断是否需要vnode渲染 -->
+                            <template v-if="column.render">
+                                <vnodes :vnodes="column.render({value:item[column.field]})"></vnodes>
+                            </template>
+                            <template v-else>
+                            {{ item[column.field] }}
+                            </template>
                         </td>
                     </template>
                     <!-- 按钮 -->
@@ -82,16 +89,21 @@
 </template>
 
 <script>
-import WIcon from "./icon";
+import WIcon from "../icon";
 export default {
   components: {
-    WIcon
+    WIcon,
+    //函数化组件
+    vnodes: {
+        functional: true,
+        render: (h, context) => context.props.vnodes
+    }
   },
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
+    // columns: {
+    //   type: Array,
+    //   required: true
+    // },
     orderBy: {
         type: Object
     },
@@ -146,7 +158,8 @@ export default {
           //记录展开的
           expandedIds:[],
           open:false,
-          scrollBarWidth:0 //记录是否有scroll
+          scrollBarWidth:0, //记录是否有scroll
+          columns:[]
       }
   },
   computed: {
@@ -186,8 +199,20 @@ export default {
     },
   },
   mounted(){
-    //表示有slot
+    //表示有scopedSlots vs slots
+    console.log(this.$slots)
     console.log(this.$scopedSlots)
+    //column作为组件去添加 可以添加自定义的标签等等
+    //this.$slots.default是VNode节点
+    this.columns = this.$slots.default.map(node=>{
+        //打印出这个对象node
+        let {text, field, width} = node.componentOptions.propsData
+        //抽离出渲染函数 要是有scope-slot这个模板 说明有自定义标签 需要渲染render函数
+        let render = node.data.scopedSlots && node.data.scopedSlots.default
+        return {text, field, width, render}
+    })
+    //let result = this.columns[0].render({value: '方方'})
+
     //固定表头 原理是复制一份table 删除tbody
     //表头需要计算宽度? 取出表的每一行field宽度
     //浅拷贝 false 不拷贝子元素 | 第一种复制一份并删除其余元素的用深拷贝
@@ -213,7 +238,9 @@ export default {
         let borderLeft = styles.getPropertyValue('border-left-width')
         let borderRight = styles.getPropertyValue('border-right-width')
         let width2 = width + parseInt(paddingRight) + parseInt(paddingRight) + parseInt(borderLeft) + parseInt(borderRight) + 'px'
+        console.log('width',width2)
         this.$refs.actionsHeader.style.width = width2
+        console.log('this.$refs.actionsHeader',this.$refs)
         this.$refs.actions.map(div=>{
             div.parentNode.style.width = width2
         })
@@ -227,7 +254,7 @@ export default {
   beforeDestroy(){
     //删除最后不需要的东西
     // window.removeEventListener('resize',this.onWindowResize)
-    // this.table2.remove()
+    this.table2.remove()
   },
   watch: {
     //检测selectedItems选中状态 改变半选和全选按钮
