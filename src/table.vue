@@ -132,15 +132,20 @@ export default {
   },
   mounted(){
     //固定表头 原理是复制一份table 删除tbody
+    //表头需要计算宽度? 取出表的每一行field宽度
     let table2 = this.$refs.table.cloneNode(true)
     table2.classList.add('w-table-copy')
-    Array.from(table2.children).map(node=>{
-        if(node.tagName.toLowerCase() !== 'thead'){
-            node.remove()
-        }
-    })
-    this.$refs.wrapper.appendChild(table2)
-    console.log(table2)
+    this.table2 = table2 //记录复制的table2
+    this.$refs.wrapper.appendChild(this.table2)
+    this.updateHeaderWidth()
+    //resize
+    this.onWindowResize = () => this.updateHeaderWidth()
+    window.addEventListener('resize',this.onWindowResize)
+  },
+  beforeDestroy(){
+    //删除最后不需要的东西
+    window.removeEventListener('resize',this.onWindowResize)
+    this.table2.remove()
   },
   watch: {
     //检测selectedItems选中状态 改变半选和全选按钮
@@ -156,6 +161,26 @@ export default {
     }
   },
   methods: {
+    updateHeaderWidth(){
+        let tableHead = Array.from(this.$refs.table.children).filter(node=>node.tagName.toLowerCase()==='thead')[0]
+        let tableHead2
+        Array.from(this.table2.children).map(node=>{
+            if(node.tagName.toLowerCase() !== 'thead'){
+                node.remove()
+            }else{
+                tableHead2 = node
+            }
+        })
+        let th = document.createElement("th")
+        Array.from(tableHead.children[0].children).map((th,i)=>{
+            let {width} = th.getBoundingClientRect()
+            tableHead2.children[0].children[i].style.width = width + 'px' 
+        })
+        //已知滚动条宽度？？有滚动条 再次加上一个th
+        let scrollBarWidth = parseInt(this.$refs.tableWrapper.offsetWidth) - parseInt(this.$refs.tableWrapper.scrollWidth);
+        if(scrollBarWidth > 0)
+            tableHead2.children[0].appendChild(th)
+    },
     changeOrderBy(key){
         //改变父 props不能直接操作 复制一份出来
         //如果一开始是降序 再次点击变成不知道啥排序
