@@ -7,13 +7,19 @@
             :selected-items.sync="selected"
             :order-by.sync = "orderBy"
             :loading="loading"
+            expand-field="description"
             @update:orderBy ="x"
-            height="400px"
-            numberVisible
+            height="400"
             bordered 
             compact
             striped 
-            ></w-table>
+            checkable
+            >
+                <template slot-scope="data">
+                    <button @click="edit(data.item)">编辑</button>
+                    <button>查看</button>
+                </template>
+            </w-table>
         </div>
         {{selected}}
     </div>
@@ -29,8 +35,10 @@
             return {
               selected:[],
               //asc desc是UI数据 不能加在本身数据上面
+              //可以给定固定的宽度 解决问题！！！
               columns:[
-                {text:'姓名',field:'name'},
+                {text:'姓名',field:'name',width:100},
+                {text:'性别',field:'sex',width:100},
                 {text:'分数',field:'score'}
               ],
               orderBy:{
@@ -40,24 +48,24 @@
               },
               loading:false,
               dataSource:[
-                {id: 1, name: '方方', score: 100},
-                {id: 2, name: '圆圆', score: 99},
-                {id: 3, name: '张三', score: 100},
-                {id: 4, name: '李四', score: 99},
-                {id: 5, name: '超人', score: 100},
-                {id: 6, name: '蝙蝠侠', score: 99},
-                {id: 7, name: '蜘蛛侠', score: 100},
-                {id: 8, name: '钢铁侠', score: 99},
-                {id: 9, name: '李四', score: 99},
-                {id: 10, name: '超人', score: 100},
-                {id: 11, name: '蝙蝠侠', score: 99},
-                {id: 12, name: '蜘蛛侠', score: 100},
-                {id: 13, name: '钢铁侠', score: 99},
-                {id: 14, name: '李四', score: 99},
-                {id: 15, name: '超人', score: 100},
-                {id: 16, name: '蝙蝠侠', score: 99},
-                {id: 17, name: '蜘蛛侠', score: 100},
-                {id: 18, name: '钢铁侠', score: 99}
+                {id: 1, name: '方方', sex:'男',score: 100,description:'weizai'},
+                {id: 2, name: '圆圆', sex:'男',score: 99},
+                {id: 3, name: '张三', sex:'男',score: 100},
+                {id: 4, name: '李四', sex:'男',score: 99},
+                {id: 5, name: '超人', sex:'男',score: 100},
+                {id: 6, name: '蝙蝠侠', sex:'男',score: 99},
+                {id: 7, name: '蜘蛛侠', sex:'男',score: 100},
+                {id: 8, name: '钢铁侠', sex:'男',score: 99},
+                {id: 9, name: '李四', sex:'男',score: 99},
+                {id: 10, name: '超人', sex:'男',score: 100},
+                {id: 11, name: '蝙蝠侠', sex:'男',score: 99},
+                {id: 12, name: '蜘蛛侠', sex:'男',score: 100},
+                {id: 13, name: '钢铁侠', sex:'男',score: 99},
+                {id: 14, name: '李四', sex:'男',score: 99},
+                {id: 15, name: '超人', sex:'男',score: 100},
+                {id: 16, name: '蝙蝠侠', sex:'男',score: 99},
+                {id: 17, name: '蜘蛛侠', sex:'男',score: 100},
+                {id: 18, name: '钢铁侠', sex:'男',score: 99}
               ]  
             }
         },
@@ -71,6 +79,9 @@
                     this.dataSource = this.dataSource.sort((a,b)=>a.score-b.score)
                     this.loading = false
                 },1000)
+            },
+            edit(item){
+                alert(`编辑了${item.id}`)
             }
         }
     }

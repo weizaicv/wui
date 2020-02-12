@@ -5,49 +5,73 @@
         <table class="w-table" :class="{ bordered, compact, striped: striped }" ref="table">
         <thead>
             <tr>
-            <th>
-                <input
-                type="checkbox"
-                ref="allChecked"
-                @change="onChangeAllItems"
-                :checked="isAllItemsSelected"
-                />
-            </th>
-            <th v-if="numberVisible">#</th>
-            <th
-                v-for="column in columns"
-                :key="column.field"
-            >
-                <div class="w-table-header">
-                    {{column.text}}
-                    <span 
-                    class="w-table-sorter" 
-                    v-if="column.field in orderBy"
-                    @click="changeOrderBy(column.field)"
-                    >
-                    <w-icon name="asc" :class="{active:orderBy[column.field]==='asc'}"></w-icon>
-                    <w-icon name="desc" :class="{active:orderBy[column.field]==='desc'}"></w-icon>
-                    </span>
-                </div>
-            </th>
+                <th :style="{width:'50px'}"></th>
+                <th :style="{width:'50px'}" v-if="checkable">
+                    <input
+                    type="checkbox"
+                    ref="allChecked"
+                    @change="onChangeAllItems"
+                    :checked="isAllItemsSelected"
+                    />
+                </th>
+                <th :style="{width:'50px'}" v-if="numberVisible">#</th>
+                <th
+                    :style="{width:column.width + 'px'}"
+                    v-for="column in columns"
+                    :key="column.field"
+                >
+                    <div class="w-table-header">
+                        {{column.text}}
+                        <span 
+                        class="w-table-sorter" 
+                        v-if="column.field in orderBy"
+                        @click="changeOrderBy(column.field)"
+                        >
+                        <w-icon name="asc" :class="{active:orderBy[column.field]==='asc'}"></w-icon>
+                        <w-icon name="desc" :class="{active:orderBy[column.field]==='desc'}"></w-icon>
+                        </span>
+                    </div>
+                </th>
+                <th ref="actionsHeader" v-if="$scopedSlots.default"></th>
+                <th :style="{width:scrollBarWidth+'px'}" v-if="scrollBarWidth>0"></th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in dataSource" :key="item.id">
-            <td>
-                <input
-                type="checkbox"
-                @change="onChangeItem(item, index, $event)"
-                :checked="inSelectedItems(item)"
-                />
-            </td>
-            <td v-if="numberVisible">{{ index + 1 }}</td>
-            <template v-for="column in columns">
-                <td :key="column.field">
-                {{ item[column.field] }}
-                </td>
+            <template v-for="(item, index) in dataSource">
+                <tr :key="item.id">
+                    <td :style="{width:'50px'}">
+                        <span class="w-table-expandicon" :class="{open:expandedIds.includes(item.id)}">
+                            <w-icon name="nextPage" @click="expendItem(item.id)"></w-icon>
+                        </span>
+                    </td>
+                    <td :style="{width:'50px'}" v-if="checkable">
+                        <input
+                        type="checkbox"
+                        @change="onChangeItem(item, index, $event)"
+                        :checked="inSelectedItems(item)"
+                        />
+                    </td>
+                    <td :style="{width:'50px'}" v-if="numberVisible">{{ index + 1 }}</td>
+                    <template v-for="column in columns">
+                        <td 
+                        :style="{width:column.width + 'px'}"
+                        :key="column.field">
+                        {{ item[column.field] }}
+                        </td>
+                    </template>
+                    <!-- 按钮 -->
+                    <td v-if="$scopedSlots.default">
+                        <div ref="actions" style="display: inline-block;">
+                            <slot :item="item"></slot>
+                        </div>
+                    </td>
+                </tr>
+                <tr :key="`${item.id}-expand`" v-if="inExpandedIds(item.id)">
+                    <td :colspan="columns.length + expendedCellColSpan">
+                        {{item[expandField]||'空'}}  
+                    </td>
+                </tr>
             </template>
-            </tr>
         </tbody>
         </table>
     </div>
@@ -74,6 +98,10 @@ export default {
     numberVisible: {
       type: Boolean,
       default: false
+    },
+    checkable: {
+        type: Boolean,
+        default: false
     },
     bordered: {
       type: Boolean,
@@ -108,7 +136,18 @@ export default {
     //表格高度
     height:{
         type:[Number,String]
+    },
+    expandField:{
+        type:String
     }
+  },
+  data(){
+      return{
+          //记录展开的
+          expandedIds:[],
+          open:false,
+          scrollBarWidth:0 //记录是否有scroll
+      }
   },
   computed: {
     isAllItemsSelected() {
@@ -128,24 +167,67 @@ export default {
         }
       }
       return equal;
-    }
+    },
+    expendedCellColSpan (){
+        let result = 0
+        if(this.checkable){
+            result += 1
+        }
+        if(this.expandField){
+            result += 1
+        }
+        if(this.numberVisible){
+            result += 1
+        }
+        if(this.scrollBarWidth>0){
+            result += 1
+        }
+        return result
+    },
   },
   mounted(){
+    //表示有slot
+    console.log(this.$scopedSlots)
     //固定表头 原理是复制一份table 删除tbody
     //表头需要计算宽度? 取出表的每一行field宽度
-    let table2 = this.$refs.table.cloneNode(true)
+    //浅拷贝 false 不拷贝子元素 | 第一种复制一份并删除其余元素的用深拷贝
+    //第二种方法
+    let table2 = this.$refs.table.cloneNode(false) //只是复制table 不复制下面的元素
     table2.classList.add('w-table-copy')
-    this.table2 = table2 //记录复制的table2
-    this.$refs.wrapper.appendChild(this.table2)
-    this.updateHeaderWidth()
-    //resize
-    this.onWindowResize = () => this.updateHeaderWidth()
-    window.addEventListener('resize',this.onWindowResize)
+    let tHead = this.$refs.table.children[0]
+    let {height} = tHead.getBoundingClientRect()
+    this.$refs.tableWrapper.style.marginTop = height + 'px'
+    this.$refs.tableWrapper.style.height = this.height - height + 'px'
+    table2.appendChild(tHead)
+    this.$refs.wrapper.appendChild(table2)
+
+    //动态计算按钮编辑，显示那一列的宽度
+    if(this.$scopedSlots){
+        let div = this.$refs.actions[0]
+        let {width} = div.getBoundingClientRect()
+        let tdNode = div.parentNode
+        let styles = getComputedStyle(tdNode)
+        //得到盒子所有属性 相加
+        let paddingLeft = styles.getPropertyValue('padding-left')
+        let paddingRight = styles.getPropertyValue('padding-right')
+        let borderLeft = styles.getPropertyValue('border-left-width')
+        let borderRight = styles.getPropertyValue('border-right-width')
+        let width2 = width + parseInt(paddingRight) + parseInt(paddingRight) + parseInt(borderLeft) + parseInt(borderRight) + 'px'
+        this.$refs.actionsHeader.style.width = width2
+        this.$refs.actions.map(div=>{
+            div.parentNode.style.width = width2
+        })
+    }
+    //记录scroll
+    this.scrollBarWidth = parseInt(this.$refs.tableWrapper.offsetWidth) - parseInt(this.$refs.tableWrapper.scrollWidth)
+    // this.updateHeaderWidth()
+    // this.onWindowResize = () => this.updateHeaderWidth()
+    // window.addEventListener('resize',this.onWindowResize)
   },
   beforeDestroy(){
     //删除最后不需要的东西
-    window.removeEventListener('resize',this.onWindowResize)
-    this.table2.remove()
+    // window.removeEventListener('resize',this.onWindowResize)
+    // this.table2.remove()
   },
   watch: {
     //检测selectedItems选中状态 改变半选和全选按钮
@@ -161,6 +243,19 @@ export default {
     }
   },
   methods: {
+    inExpandedIds(id) {
+        return this.expandedIds.indexOf(id) >= 0
+    },
+    expendItem(id){
+        //点击展开
+        if(this.inExpandedIds(id)){
+            this.expandedIds.splice(this.expandedIds.indexOf(id),1)
+        }else{
+            this.expandedIds.push(id)
+        }
+    },
+
+    //之前测试的方法无效！！！
     updateHeaderWidth(){
         let tableHead = Array.from(this.$refs.table.children).filter(node=>node.tagName.toLowerCase()==='thead')[0]
         let tableHead2
@@ -181,6 +276,8 @@ export default {
         if(scrollBarWidth > 0)
             tableHead2.children[0].appendChild(th)
     },
+    //之前测试的方法无效！！！
+
     changeOrderBy(key){
         //改变父 props不能直接操作 复制一份出来
         //如果一开始是降序 再次点击变成不知道啥排序
@@ -312,5 +409,13 @@ $grey: darken($grey, 10%);
       width: 100%;
       background: white;
   }
+}
+
+.w-table-expandicon {
+    display: inline-flex; 
+    transition: transform 250ms;
+    &.open {
+        transform: rotate(90deg);
+    }
 }
 </style>
