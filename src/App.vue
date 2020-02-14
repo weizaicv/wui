@@ -11,6 +11,16 @@
     >
       <p v-if="showme">show me</p> 
     </transition>
+
+    <!-- 测试toast -->
+     <!-- 测试toast -->
+    <div class="box">
+        <button @click="clickToast">常规测试</button>
+        <button @click="showToast1">测试top</button>
+        <button @click="showToast2">测试center</button>
+        <button @click="showToast3">测试bottom</button>
+    </div>
+
     <!-- 测试tabs -->
     <w-tabs :selected.sync="selectedTab">
       <w-tabs-head class="">
