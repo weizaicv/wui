@@ -1,11 +1,14 @@
 <template>
     <div>
+        {{error}}
        <w-uploader 
        accept="image/*" 
        action="http://127.0.0.1:3333/upload" 
        actionPreviewUrl="http://127.0.0.1:3333/upload"
        name="file" 
        :fileList.sync="fileList"
+       @addFile="addFile"
+       @error="error=$event"
        >
            <template slot="default">
                <w-button icon="upload">上传</w-button>
@@ -31,11 +34,17 @@
         },
         data(){
             return {
-                fileList:[]
+                fileList:[],
+                error:''
             }
         },
         methods:{
-           
+            alert(error){
+                window.alert(error||'上传失败')
+            },
+            addFile(file){
+                this.fileList.push(file)
+            }
         }
     }
 </script>

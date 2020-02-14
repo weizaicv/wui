@@ -70,17 +70,56 @@
                 //创建input file
                 let input = this.createInput()
                 input.addEventListener('change',()=>{
-                    this.uploadFile(input.files[0])
+                     this.uploadFiles(input.files) // 多文件
+                    // this.uploadFile(input.files[0])
                     input.remove()
                 })
                 input.click()
             },
             createInput(){
+                this.$refs.tmp.innerHTML = ''
                 let input = document.createElement("input")
                 input.type = 'file'
+                input.multiple = true  //可以多选
+                input.accept = "image/*"
                 this.$refs.tmp.appendChild(input)
                 return input
             },
+            //多文件
+            uploadFiles(rawFiles){
+
+                for(let i=0;i<rawFiles.length;i++){
+
+                    let rawFile = rawFiles[i]
+                    //这里最好传入file参数，不然有歧义
+                    let formData = new FormData
+                    formData.append(this.name,rawFile)
+                    let {name,size,type} = rawFile
+
+                    //生成新的name，防止重复上传图片
+                    let newName = this.generateName(name)
+
+                    //loading
+                    this.beforeUploadFile(rawFile,newName)
+
+                    this.doUploadFile(formData,(response)=>{
+                        console.log('1111111111')
+                        //传入成功回调
+                        let url = this.parseReponse(response)
+                        this.afterUploadFile(rawFile,newName,url)
+                    },()=>{
+                        //由于渲染是异步
+                        //1.fileList先被emit过去到父级元素
+                        //2.代码执行到这里还有触发render导致fileList还是旧数据
+                        //3.fail在xhr onload 里面异步调用可以确保已经render UI
+                        console.log('errorFileList',this.fileList)
+                        this.uploadError(newName)
+                    })
+
+                }
+            },
+
+            //单文件
             uploadFile(rawFile){
                 //这里最好传入file参数，不然有歧义
                 let formData = new FormData
@@ -134,7 +173,9 @@
             beforeUploadFile(rawFile,newName){
                 //上传之前status为uploading
                 let {size,type} = rawFile
-                this.$emit("update:fileList",[...this.fileList,{name:newName,type,size,status:'uploading'}])
+                console.log('beforeUploadFile fileList',this.fileList)
+                this.$emit("addFile",{name:newName,type,size,status:'uploading'})
+                // this.$emit("update:fileList",[...this.fileList,{name:newName,type,size,status:'uploading'}])
             },
             afterUploadFile(rawFile,newName,url){
                 //修改file的status状态??????
@@ -149,11 +190,8 @@
                 //splice返回的是被删除的数组
                 let fileListCopy = [...this.fileList]
                 fileListCopy.splice(index,1,copy)
+                console.log('beforeUploadFile fileList',this.fileList)
                 this.$emit("update:fileList",fileListCopy)
-                // let fileListCopy = this.fileList.splice(index,1,copy)
-                // console.log('copy',copy)
-                // console.log('fileListCopy',fileListCopy)
-                // this.$emit("update:fileList",fileListCopy)
             },
             doUploadFile(formData,success,fail){
                 let xhr = new XMLHttpRequest()
