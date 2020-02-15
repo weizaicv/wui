@@ -27,7 +27,8 @@ module.exports = {
                   '/components/popover',
                   '/components/tabs',
                   '/components/toast',
-                  '/components/collapse'
+                  '/components/collapse',
+                  '/components/uploader'
                 ],
                 collapsable: false, //是否展开
             }

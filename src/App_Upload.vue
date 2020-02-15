@@ -1,13 +1,13 @@
 <template>
     <div>
-        {{error}}
+       <span style="color:red">{{error}}</span>
        <w-uploader 
        accept="image/*" 
        action="http://127.0.0.1:3333/upload" 
        actionPreviewUrl="http://127.0.0.1:3333/upload"
        name="file" 
        :fileList.sync="fileList"
-       @addFile="addFile"
+       :sizeLimit="2*1024*1024"
        @error="error=$event"
        >
            <template slot="default">
@@ -41,10 +41,8 @@
         methods:{
             alert(error){
                 window.alert(error||'上传失败')
-            },
-            addFile(file){
-                this.fileList.push(file)
             }
+           
         }
     }
 </script>

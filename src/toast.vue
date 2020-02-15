@@ -65,6 +65,7 @@
                 this.$nextTick(()=>{
                     console.log(this.$refs.line)
                     console.log(this.$refs.wrapper)
+                    if(this.$refs.line)
                     this.$refs.line.style.height = 
                     `${this.$refs.wrapper.getBoundingClientRect().height}px`
                 },1000)
@@ -113,6 +114,7 @@ $font-size:14px;
     100%{opacity:1;translate: translateY(0%)}
 }
 .wrapper{
+    z-index: 1000;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
