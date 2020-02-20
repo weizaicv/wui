@@ -1,8 +1,8 @@
 <template>
-    <div class="popover" ref="popover">
-        <div ref="contentWrapper" class="content-wrapper" 
+    <div class="w-popover" ref="popover">
+        <div ref="contentWrapper" class="w-popover-content-wrapper" 
         v-if="visible"
-        :class = "{[`position-${position}`]:true}"
+        :class = "[{[`position-${position}`]:true},popClassName]"
         >
             <!-- 传递close函数给到外部 结构出来 slot-scope={close} -->
             <slot name="content" :close="close"></slot>
@@ -30,6 +30,13 @@
                 validator (value) {
                     return ['click','hover'].indexOf(value) >= -1
                 }
+            },
+            popClassName:{
+                type:String
+            },
+            //为了外部能够调用这个content
+            container: {
+                type: Element
             }
         },
         data(){
@@ -54,17 +61,32 @@
             }
         },
         mounted(){
-            if(this.trigger === 'click'){
-                this.$refs.popover.addEventListener('click',this.onClick)
-            }else{
-                this.$refs.popover.addEventListener('mouseenter',this.open)
-                this.$refs.popover.addEventListener('mouseleave',this.close)
-            }
+            this.addPopoverListeners()
+        },
+        beforeDestroy () {
+            // this.putBackContent()
+            this.removePopoverListeners()
         },
         //1.外部有overflow:hidden会隐藏显示框，将显示框独立
         //2.会冒泡 但是如果都阻止冒泡 最外部绑定事件将无效
         //3.鼠标移开就消失 方法：1.方法1：外部包父容器 2都设置上mouseover mouseleave 配合定时器
         methods:{
+            addPopoverListeners(){
+                if(this.trigger === 'click'){
+                    this.$refs.popover.addEventListener('click',this.onClick)
+                }else{
+                    this.$refs.popover.addEventListener('mouseenter',this.open)
+                    this.$refs.popover.addEventListener('mouseleave',this.close)
+                }
+            },
+            removePopoverListeners () {
+                if (this.trigger === 'click') {
+                    this.$refs.popover.removeEventListener('click', this.onClick)
+                } else {
+                    this.$refs.popover.removeEventListener('mouseenter', this.open)
+                    this.$refs.popover.removeEventListener('mouseleave', this.close)
+                }
+            },
             onClick(e){
                //看点击的地方是不是按钮,只触发按钮的点击
                if(this.$refs.triggerWrapper.contains(e.target)){
@@ -93,41 +115,44 @@
             },
             positionContent(){
                 //用表数据展现 不要写成if else
-                const {contentWrapper,triggerWrapper} = this.$refs
-                document.body.appendChild(contentWrapper)
+                //这里必须要加上 ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                const {contentWrapper,triggerWrapper} = this.$refs;
+                //可能有外部传递的container容器过来、
+                (this.container || document.body).appendChild(contentWrapper)
                 //显示出来了 content 并且是 hover类型需要 将内容也绑定鼠标进入
                 if(this.trigger === 'hover'){
                     this.$refs.contentWrapper.addEventListener('mouseenter',this.open)
                     this.$refs.contentWrapper.addEventListener('mouseleave',this.close)
                 }
-                
-
-                let {width,height,top,left} = triggerWrapper.getBoundingClientRect()
-                let {height:height2} = contentWrapper.getBoundingClientRect()
+                const {width, height, top, left} = triggerWrapper.getBoundingClientRect()
+                const {height: height2} = contentWrapper.getBoundingClientRect()
                 let positions = {
                     top:{
-                        top:top + window.scrollY + 'px',
-                        left:left + window.scrollX + 'px'
+                        top:top + window.scrollY,
+                        left:left + window.scrollX
                     },
                     bottom:{
-                        top:top + height + window.scrollY + 'px',
-                        left:left + window.scrollX + 'px'
+                        top:top + height + window.scrollY,
+                        left:left + window.scrollX
                     },
                     left:{
-                        top:top + (height-height2)/2 + window.scrollY + 'px',
-                        left:left + window.scrollX + 'px'
+                        top:top + (height-height2)/2 + window.scrollY,
+                        left:left + window.scrollX
                     },
                     right:{
-                        top:top + (height-height2)/2 + window.scrollY + 'px',
-                        left:left + width + window.scrollX + 'px'
+                        top:top + (height-height2)/2 + window.scrollY,
+                        left:left + width + window.scrollX
                     }
                 }
-                contentWrapper.style.left = positions[this.position].left
-                contentWrapper.style.top = positions[this.position].top
+                console.log(contentWrapper.getBoundingClientRect())
+                contentWrapper.style.left = positions[this.position].left + 'px'
+                contentWrapper.style.top = positions[this.position].top + 'px'
+                console.log(positions[this.position].left)
+                console.log(positions[this.position].top)
             },
             open(){
-                console.log('open')
                 this.visible = true
+                this.$emit('open')
                 this.$nextTick(()=>{
                     this.positionContent()
                     document.addEventListener('click',this.onClickDocument)
@@ -153,7 +178,7 @@ $border-radius: 4px;
     vertical-align: top;
     position: relative;
 }
-.content-wrapper{
+.w-popover-content-wrapper{
     position: absolute;
     border: 1px solid $border-color;
     filter:drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));

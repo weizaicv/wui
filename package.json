@@ -1,8 +1,8 @@
 {
-  "name": "w-ui-design-test",
-  "version": "0.1.1",
+  "name": "w-ui-design",
+  "version": "0.0.2",
   "description": "a vue js framework",
-  "main": "lib/vue-test.umd.min.js",
+  "main": "lib/w-ui.umd.min.js",
   "private": false,
   "license": "MIT",
   "author": "weizai",
@@ -14,7 +14,7 @@
     "test:unit:old": "vue-cli-service test:unit",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "lib": "vue-cli-service build --target lib --name vue-test --dest lib src/index.js"
+    "lib": "vue-cli-service build --target lib --name w-ui --dest lib src/index.js"
   },
   "dependencies": {
     "animate.css": "^3.7.2",

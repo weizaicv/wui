@@ -8,14 +8,14 @@
 1.安装WUI
 
 ```bash
-npm i --save w-ui-design-test
+npm i --save w-ui-design
 ```
 
 2.引入WUI
 
 ```js
-import {Button,Icon,ButtonGroup} from 'w-ui-design-test'
-import 'w-ui-design-test/dist/index.css'
+import {Button,Icon,ButtonGroup} from 'w-ui-design'
+import 'w-ui-design/lib/w-ui.css'
 export default {
   name: 'app',
   components: {

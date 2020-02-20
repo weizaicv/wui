@@ -1,12 +1,12 @@
 ---
-title: Button 按钮
+title: slides 轮播图
 sidebarDepth: 2
 ---
 # 按钮
 #### 常用操作按钮
 
 <ClientOnly>
-<button-demos />
+<slides-demos />
 </ClientOnly>
 
 属性

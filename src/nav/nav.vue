@@ -83,7 +83,7 @@
 </script>
 
 <style lang="scss" scoped>
-@import "_var";
+@import "./styles/_var";
 .w-nav{
     display: flex;
     border-bottom: 1px solid $grey;

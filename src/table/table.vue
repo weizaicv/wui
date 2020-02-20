@@ -33,8 +33,8 @@
                     </div>
                 </th>
                 <!-- 加上key 不然无法判断是哪个 -->
-                <th ref="actionsHeader" v-if="$scopedSlots.default" key="actionsheader"></th>
-                <th :style="{width:scrollBarWidth+'px'}" v-if="scrollBarWidth>0" key="scrollbar"></th>
+                <th ref="actionsHeader" v-if="$scopedSlots.default&&$scopedSlots.$stable" key="actionsheader"></th>
+                <!-- <th :style="{width:scrollBarWidth+'px'}" v-if="scrollBarWidth>0" key="scrollbar"></th> -->
             </tr>
         </thead>
         <tbody>
@@ -67,7 +67,7 @@
                         </td>
                     </template>
                     <!-- 按钮 -->
-                    <td v-if="$scopedSlots.default">
+                    <td v-if="$scopedSlots.default&&$scopedSlots.$stable">
                         <div ref="actions" style="display: inline-block;">
                             <slot :item="item"></slot>
                         </div>
@@ -91,6 +91,7 @@
 <script>
 import WIcon from "../icon";
 export default {
+  name:"WTable",
   components: {
     WIcon,
     //函数化组件
@@ -200,16 +201,20 @@ export default {
   },
   mounted(){
     //表示有scopedSlots vs slots
-    console.log(this.$slots)
-    console.log(this.$scopedSlots)
+    // console.log(this.$scopedSlots)
     //column作为组件去添加 可以添加自定义的标签等等
     //this.$slots.default是VNode节点
-    this.columns = this.$slots.default.map(node=>{
+    //删除无效的空节点
+    this.columns = this.$slots.default
+    .filter(node=>node.tag)
+    .map(node=>{
         //打印出这个对象node
-        let {text, field, width} = node.componentOptions.propsData
-        //抽离出渲染函数 要是有scope-slot这个模板 说明有自定义标签 需要渲染render函数
-        let render = node.data.scopedSlots && node.data.scopedSlots.default
-        return {text, field, width, render}
+        if(node.componentOptions){
+          let {text, field, width} = node.componentOptions.propsData
+          //抽离出渲染函数 要是有scope-slot这个模板 说明有自定义标签 需要渲染render函数
+          let render = node.data.scopedSlots && node.data.scopedSlots.default
+          return {text, field, width, render}
+        }
     })
     //let result = this.columns[0].render({value: '方方'})
 
@@ -226,21 +231,20 @@ export default {
     table2.appendChild(tHead)
     this.$refs.wrapper.appendChild(table2)
 
-    //动态计算按钮编辑，显示那一列的宽度
-    if(this.$scopedSlots){
+    //动态计算按钮编辑，显示那一列的宽度 $stable true表示有作用域插槽？！！！！！！
+    //得到盒子所有属性 相加
+    //暂时改成动态计算 按钮组的宽度
+    if(this.$scopedSlots && this.$scopedSlots.$stable && 0){
         let div = this.$refs.actions[0]
         let {width} = div.getBoundingClientRect()
         let tdNode = div.parentNode
         let styles = getComputedStyle(tdNode)
-        //得到盒子所有属性 相加
         let paddingLeft = styles.getPropertyValue('padding-left')
         let paddingRight = styles.getPropertyValue('padding-right')
         let borderLeft = styles.getPropertyValue('border-left-width')
         let borderRight = styles.getPropertyValue('border-right-width')
         let width2 = width + parseInt(paddingRight) + parseInt(paddingRight) + parseInt(borderLeft) + parseInt(borderRight) + 'px'
-        console.log('width',width2)
         this.$refs.actionsHeader.style.width = width2
-        console.log('this.$refs.actionsHeader',this.$refs)
         this.$refs.actions.map(div=>{
             div.parentNode.style.width = width2
         })
@@ -254,6 +258,7 @@ export default {
   beforeDestroy(){
     //删除最后不需要的东西
     // window.removeEventListener('resize',this.onWindowResize)
+    if(this.table2)
     this.table2.remove()
   },
   watch: {
@@ -333,7 +338,6 @@ export default {
         //不能用splice 因为数组是拷贝的 发生了变化
         copy = copy.filter(i => i.id !== item.id);
       }
-      console.log(copy);
       this.$emit("update:selectedItems", copy);
     },
     onChangeAllItems(e) {
@@ -346,7 +350,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "_var";
+@import "./styles/_var";
 $grey: darken($grey, 10%);
 .w-table {
   width: 100%;

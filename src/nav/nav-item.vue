@@ -36,7 +36,7 @@
 
 <style lang="scss" scoped>
 // 是否有vertical判断是否 样式中 下划线
-@import "_var";
+@import "./styles/_var";
 .w-nav-item{
     padding: 10px 20px;
     position: relative;

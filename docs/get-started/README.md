@@ -11,7 +11,7 @@ title: 快速上手
 在 main.js 中写入以下内容，引入组件样式：
 ```js
 import Vue from 'vue';
-import 'w-ui-design-test/lib/vue-test.css'
+import 'w-ui-design/lib/w-ui.css'
 import App from './App.vue';
 
 new Vue({
@@ -34,7 +34,7 @@ new Vue({
   </div>
 </template>
 <script>
-import {Button,Collapse,CollapseItem} from 'w-ui-design-test'
+import {Button,Collapse,CollapseItem} from 'w-ui-design'
 export default {
   name: 'app',
   components: {

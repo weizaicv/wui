@@ -10,6 +10,7 @@
     import Icon from '../icon'
 // vue的语法糖 vue.component('',{})
     export default {
+        name:"WButton",
         components:{
             'w-icon':Icon
         },

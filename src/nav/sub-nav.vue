@@ -104,7 +104,8 @@
 </script>
 
 <style scoped lang="scss">
-@import '_var';
+// @import '_var';
+@import "./styles/_var";
 .x-enter-active, .x-leave-active { }
 .x-enter, .x-leave-to { }
 .x-enter-to, .x-leave { }
@@ -125,6 +126,7 @@
   &-label { padding: 10px 20px; display: block; }
   &-icon { display: none; }
   &-popover{
+    background:#fff;
     position: absolute;
     top: 100%;
     left: 0;
@@ -152,6 +154,7 @@
     }
   }
   .w-sub-nav-popover {
+    background:#fff;
     top: 0;
     left: 100%;
     margin-left: 8px;

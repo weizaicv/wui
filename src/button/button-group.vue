@@ -6,6 +6,7 @@
 
 <script>
     export default {
+        name:"WButtonGroup",
         mounted() {
             //防止用户结果瞎改
             for(let node of this.$el.children){

@@ -41,19 +41,19 @@
             return {
                 selectedTab: "woman",
                 code_groupBtn:`
-            <w-tabs :selected.sync="selectedTab">
-                <w-tabs-head class="">
-                    <template slot="actions"><w-button>设置</w-button></template>
-                    <w-tabs-item name="woman">woman</w-tabs-item>
-                    <w-tabs-item name="settings" disabled>settings</w-tabs-item>
-                    <w-tabs-item name="finance">finance</w-tabs-item>
-                </w-tabs-head>
-                <w-tabs-body>
-                    <w-tabs-pane name="woman">woman's data</w-tabs-pane>
-                    <w-tabs-pane name="settings">settings's data</w-tabs-pane>
-                    <w-tabs-pane name="finance">finance's data</w-tabs-pane>
-                </w-tabs-body>
-            </w-tabs>             
+    <w-tabs :selected.sync="selectedTab">
+        <w-tabs-head class="">
+            <template slot="actions"><w-button>设置</w-button></template>
+            <w-tabs-item name="woman">woman</w-tabs-item>
+            <w-tabs-item name="settings" disabled>settings</w-tabs-item>
+            <w-tabs-item name="finance">finance</w-tabs-item>
+        </w-tabs-head>
+        <w-tabs-body>
+            <w-tabs-pane name="woman">woman's data</w-tabs-pane>
+            <w-tabs-pane name="settings">settings's data</w-tabs-pane>
+            <w-tabs-pane name="finance">finance's data</w-tabs-pane>
+        </w-tabs-body>
+    </w-tabs>             
                 `.replace(/\t+/g,'').trim()
             }
         },

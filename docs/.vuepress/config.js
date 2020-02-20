@@ -21,14 +21,24 @@ module.exports = {
                 title: '组件',  
                 children: [
                   '/components/button',
+                  '/components/icon',
                   '/components/grid',
                   '/components/input',
                   '/components/layout',
                   '/components/popover',
                   '/components/tabs',
+                  '/components/nav',
                   '/components/toast',
                   '/components/collapse',
-                  '/components/uploader'
+                  '/components/uploader',
+                  '/components/sticky',
+                  '/components/cascader',
+                  '/components/pager',
+                  '/components/scroll',
+                  '/components/table',
+                  '/components/slides',
+                  '/components/datepicker',
+                  '/components/validate'
                 ],
                 collapsable: false, //是否展开
             }

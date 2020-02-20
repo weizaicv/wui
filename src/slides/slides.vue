@@ -39,6 +39,7 @@
 <script>
     import icon from '../icon'
     export default {
+        name:"WSlides",
         components:{
             'w-icon':icon
         },

@@ -15,19 +15,24 @@
             striped 
             checkable
             >
+            <!-- 必须确保最后一个 td 是自适应的！！！！！！！！！！！！！！！！！！！ -->
+            <!-- 1.有按钮组的话  所有的column都要给width -->
+            <!-- 2.没有按钮组的话  最后的column不要给width -->
                 <!-- 添加按钮 -->
-                <template slot-scope="data">
+                <template v-slot="data">
+                <!-- <template slot-scope="data"> -->
                     <button @click="edit(data.item)">编辑</button>
                     <button>查看</button>
                 </template>
                 <!-- 添加列的新方式 组件添加 -->
                 <w-table-column text="姓名" field="name" :width="100">
+
                     <template slot-scope="props">
                         <a href="">{{props.value}}</a>
                     </template>
                 </w-table-column>
-                <w-table-column text="性别" field="sex" :width="100"></w-table-column>
-                <w-table-column text="分数" field="score"></w-table-column>
+                <w-table-column text="性别" field="sex" :width="200"></w-table-column>
+                <w-table-column text="分数" field="score" :width="300"></w-table-column>
             </w-table>
         </div>
         {{selected}}

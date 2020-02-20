@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: "GuluTableColumn",
+    name: "WTableColumn",
     props: {
       text: {
         type: String,

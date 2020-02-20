@@ -35,6 +35,7 @@
 <script>
     import Icon from './icon'
     export default {
+        name:"WPager",
        components:{
         'w-icon':Icon 
        },
@@ -134,7 +135,7 @@
 </script>
 
 <style lang="scss" scoped>
-@import "_var";
+@import "./styles/_var";
 .w-pager{
     display: inline-flex; 
     justify-content: center;
